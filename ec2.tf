@@ -70,6 +70,7 @@ resource aws_instance "my_instance" {
     security_groups = [aws_security_group.mysecuritygrp.name]
     instance_type = var.ec2_instance-type
     ami = var.ec2_ami
+    user_data = file("userdata.sh")
     root_block_device {
       volume_size = var.ec2_root_storage_size
       volume_type = "gp3"
