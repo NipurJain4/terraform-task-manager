@@ -11,10 +11,10 @@ resource "aws_default_vpc" "default" {
   }
 }
 
-resource aws_security_group mysecuritygrp {
+resource "aws_security_group" "mysecuritygrp" {
     name = var.security_groups_name
     description = "Allow TLS inbound traffic and all outbound traffic"
-    vpc_id = aws_default_vpc.default.Name
+    vpc_id = aws_default_vpc.default.id
     
     # inbound ---ingress
     ingress {
@@ -65,7 +65,8 @@ resource aws_security_group mysecuritygrp {
 }
 
 # ec2 instance
-resource aws_instance "my_instance" {
+resource "aws_instance" "my_instance" {
+    count = 2
     key_name = aws_key_pair.my-aws-key.key_name
     security_groups = [aws_security_group.mysecuritygrp.name]
     instance_type = var.ec2_instance-type
@@ -76,7 +77,7 @@ resource aws_instance "my_instance" {
       volume_type = "gp3"
     }
     tags = {
-        Name = var.ec2_instance_name
+        Name = "${var.ec2_instance_name}-${count.index + 1}"
     }
 
 }
